@@ -80,7 +80,7 @@ public:
   // do not use heater for long periods,
   // use it for max 3 minutes to heat up
   // and let it cool down at least 3 minutes.
-  void setHeatTimeout(uint8_t seconds);
+  void    setHeatTimeout(uint8_t seconds);
   uint8_t getHeatTimeout() { return _heatTimeout; };
 
   bool heatOn();
@@ -98,7 +98,7 @@ public:
   bool dataReady();
   bool readData(bool fast = true);
 
-  int getError(); // clears error flag
+  int  getError(); // clears error flag
 
 
 protected:
