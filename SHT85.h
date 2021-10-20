@@ -25,7 +25,7 @@
 #include "Wire.h"
 
 
-#define SHT_LIB_VERSION             (F("0.2.1"))
+#define SHT_LIB_VERSION             (F("0.3.0"))
 #define SHT85_LIB_VERSION           SHT_LIB_VERSION
 
 
