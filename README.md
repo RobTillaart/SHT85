@@ -8,7 +8,7 @@
 
 # SHT85
 
-Arduino library for the SHT85 temperature and humidity sensor
+Arduino library for the SHT85 temperature and humidity sensor.
 
 Based upon the SHT31 library - https://github.com/RobTillaart/SHT31
 
@@ -53,12 +53,15 @@ quite small. (max 15% gain). See output example sketch.
 This library should also work for SHT30, SHT31 and SHT35 but 
 this is not verified yet.
 
-| SENSOR | Temperature accuracy | Humidity accuracy |
-|:------:|:-------:|:------:|
-| SHT30  |  ~0.3°  |  2.0%  |
-| SHT31  |  ~0.3°  |  1.5%  |
-| SHT35  |  ~0.2°  |  1.5%  |
-| SHT85  |  ~0.2°  |  1.5%  |
+Accuracy table
+
+| SENSOR | Temperature | Humidity |
+|:------:|:-----------:|:--------:|
+| SHT30  |    ~0.3°    |   2.0%   |
+| SHT31  |    ~0.3°    |   1.5%   |
+| SHT35  |    ~0.2°    |   1.5%   |
+| SHT85  |    ~0.2°    |   1.5%   |
+
 
 Need to investigate if the interface is identical?
 If so the libraries might be merged.
@@ -102,7 +105,7 @@ you've performed a new reading.
 - **int getError()** returns last set error flag and clear it. 
 Be sure to clear the error flag by calling **getError()** before calling any command as the error flag could be from a previous command.
 
-| Error | Symbolic                  | Description
+| Error | Symbolic                  | Description                 |
 |:-----:|:--------------------------|:----------------------------|
 | 0x00  | SHT_OK                    | no error                    |
 | 0x81  | SHT_ERR_WRITECMD          | I2C write failed            |
@@ -183,11 +186,16 @@ See examples.
 ## Future
 
 - merge with other SHT sensors if possible
-- direct Fahrenheit formula ?
+- direct Fahrenheit formula ?                                DONE???
 - improve error handling / status. (all code paths)
 - verify working with ESP32
 - investigate command ART (auto sampling at 4 Hz)
 - investigate command BREAK (stop auto sampling)
 - software I2C experiments?
+- CREATE AN SHT85 simulator 
+  - I2C slave sketch with a DHT22 sensor?
+- CHECK OPEN ISSUE TO INCLUDE DEFAULT ADDRESS ?
+  - possible?
+- prioritize the ideas...
 
 
