@@ -100,6 +100,7 @@ unittest(test_begin)
 
   //  default value == 0
   assertEqual(-45, sht.getTemperature());
+  assertEqual(-49, sht.getFahrenheit());
   assertEqual(0, sht.getHumidity());
   assertEqual(0, sht.getRawTemperature());
   assertEqual(0, sht.getRawHumidity());
@@ -115,26 +116,6 @@ unittest(test_read)
   assertTrue(sht.isConnected());
   expect = SHT_OK;
   assertEqual(expect, sht.getError());
-
-/*
-  assertFalse(sht.read());
-  expect = SHT_ERR_READBYTES;
-  assertEqual(expect, sht.getError());
-
-  start = millis();
-  assertFalse(sht.read(false));
-  stop = millis();
-  Serial.println(stop - start);
-  expect = SHT_ERR_READBYTES;
-  assertEqual(expect, sht.getError());
-
-  start = millis();
-  assertFalse(sht.read(true));
-  stop = millis();
-  Serial.println(stop - start);
-  expect = SHT_ERR_READBYTES;
-  assertEqual(expect, sht.getError());
-*/
 }
 
 
