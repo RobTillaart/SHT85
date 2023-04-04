@@ -57,9 +57,9 @@ void loop()
     Serial.println(sht.getHumidity(), 1);
     sht.requestData();
   }
-
+  delay(1000);  //  do not call sensor too often (see datasheet)
 }
 
 
-// -- END OF FILE --
+//  -- END OF FILE --
 

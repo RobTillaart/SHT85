@@ -12,19 +12,19 @@
 #include "SHT85.h"
 
 
-// SUPPORTED COMMANDS - single shot mode only
+//  SUPPORTED COMMANDS - single shot mode only
 #define SHT_READ_STATUS       0xF32D
 #define SHT_CLEAR_STATUS      0x3041
 
 #define SHT_SOFT_RESET        0x30A2
 #define SHT_HARD_RESET        0x0006
 
-#define SHT_MEASUREMENT_FAST  0x2416    // page 10 datasheet
-#define SHT_MEASUREMENT_SLOW  0x2400    // no clock stretching
+#define SHT_MEASUREMENT_FAST  0x2416    //  page 10 datasheet
+#define SHT_MEASUREMENT_SLOW  0x2400    //  no clock stretching
 
 #define SHT_HEAT_ON           0x306D
 #define SHT_HEAT_OFF          0x3066
-#define SHT_HEATER_TIMEOUT    180000UL  // milliseconds
+#define SHT_HEATER_TIMEOUT    180000UL  //  milliseconds
 
 
 SHT::SHT()

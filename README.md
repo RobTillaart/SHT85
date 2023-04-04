@@ -72,10 +72,7 @@ Accuracy table:
 |   SHT85  |      ~0.2°    |     1.5%   |     Y      |
 
 
-Check SHT40, SHT45 compatibility. 
-If you have info please share.
-Need to investigate if the interface is identical.
-If so the libraries might be merged.
+Note: SHT40, SHT41 and SHT45 are not compatible with SHT3x and SHT85.
 
 
 #### Related libraries
