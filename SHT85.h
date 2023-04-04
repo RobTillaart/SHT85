@@ -10,7 +10,7 @@
 //
 //  keep lib in sync with https://github.com/RobTillaart/SHT31
 //
-//  ALLWAYS check datasheet for connections.
+//  ALWAYS check datasheet for connections.
 //
 //    TOPVIEW      SHT85
 //               +-------+
