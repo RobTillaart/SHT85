@@ -30,6 +30,7 @@
 SHT::SHT()
 {
   _address           = 0;
+  _wire              = NULL;
   _lastRead          = 0;
   _rawTemperature    = 0;
   _rawHumidity       = 0;

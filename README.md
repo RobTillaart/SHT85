@@ -11,23 +11,26 @@
 Arduino library for the SHT85 temperature and humidity sensor.
 
 Based upon the SHT31 library - https://github.com/RobTillaart/SHT31
-however this one will be leading in the future as it implements classes for the following SHT sensors: **SHT30, SHT31 and SHT35.**
+however this library will be leading in the future as it implements derived classes 
+for the following sensors: **SHT30, SHT31, SHT35 and SHT85.**.
 
 
-**Warning:** to keep self-heating below 0.1°C, the SHT85 sensor should 
+**WARNING** to keep self-heating below 0.1°C, the SHT85 sensor should 
 not be used for more than 10% of the time.
 
 
 ## Description
 
+Always check datasheet before connecting! 
+
 ```
-    // TOPVIEW      SHT85
-    //            +-------+
-    // +-----\    | SDA 4 -----
-    // | /-+  ----+ GND 3 -----
-    // | +-+  ----+ +5V 2 -----
-    // +-----/    | SCL 1 -----
-    //            +-------+
+    //  TOPVIEW      SHT85
+    //             +-------+
+    //  +-----\    | SDA 4 -----
+    //  | /-+  ----+ GND 3 -----
+    //  | +-+  ----+ +5V 2 -----
+    //  +-----/    | SCL 1 -----
+    //             +-------+
 ```
 
 
@@ -147,6 +150,7 @@ you've performed a new reading.
 - **float getHumidity()** computes the relative humidity in % based on the latest raw reading, and returns it.
 - **float getTemperature()** computes the temperature in °C based on the latest raw reading, and returns it.
 - **float getFahrenheit()** computes the temperature in °F based on the latest raw reading, and returns it.
+Note that the optional offset is set in °Celsius.
 - **uint16_t getRawHumidity()** returns the raw two-byte representation of humidity directly from the sensor.
 - **uint16_t getRawTemperature()** returns the raw two-byte representation of temperature directly from the sensor.
 
@@ -156,16 +160,19 @@ you've performed a new reading.
 Default the offset is zero for both temperature and humidity.
 These functions allows one to adjust them a little.
 
+Note the offset is in degrees Celsius.
+
 - **void setTemperatureOffset(float offset = 0)** idem.
-- **float getTemperatureOffset()** idem.
+- **float getTemperatureOffset()** returns the set offset.
 - **void setHumidityOffset(float offset = 0)** idem.
-- **float getHumidityOffset()** idem.
+- **float getHumidityOffset()** returns the set offset.
 
 
 #### Error interface
 
 - **int getError()** returns last set error flag and clear it. 
-Be sure to clear the error flag by calling **getError()** before calling any command as the error flag could be from a previous command.
+Be sure to clear the error flag by calling **getError()** before calling 
+any command as the error flag could be from a previous command.
 
 | Error | Symbolic                  | Description                 |
 |:-----:|:--------------------------|:----------------------------|
@@ -232,14 +239,19 @@ Will switch the heater off if maximum heating time has passed.
 
 ## Future
 
+
 #### Must
+
+- improve documentation.
 
 
 #### Should
 
 - more testing (incl heater)
 - verify working with ESP32
-- improve error handling / status. (all code paths)
+- improve error handling / status.
+  - all code paths
+  - reset to OK 
 - test SHT30/35
 - check SHT4x series for compatibility.
 
@@ -261,4 +273,5 @@ Will switch the heater off if maximum heating time has passed.
   - see https://github.com/RobTillaart/SHT31_SW
 - merge with other SHT sensors if possible?
   - derived classes fixes this enough.
+- **getKelvin()** wrapper? (no => check temperature class)
 
