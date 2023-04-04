@@ -32,47 +32,66 @@ not be used for more than 10% of the time.
 
 
 The SHT85 sensors should work up to 1000 KHz, however during tests 
-with an Arduino UNO it stopped between 500 - 550 KHz so to be safe I recommend
-not to use it above 400 KHz. Also the differences in read time becomes
-quite small. (max 15% gain). See output example sketch.
+with an Arduino UNO it stopped between 500 - 550 KHz.
+So to be safe I recommend not to use the sensor above 400 KHz.
+Also the differences in read time becomes quite small. (max 15% gain).
 
-| I2C speed | read ms | notes |
-|:---------:|:-------:|:------|
-|  100 KHz  |  5.11   |       |
+See indicative output example sketch. SPS are added later.
+
+
+| I2C speed | read ms |  SPS  |  notes  |
+|:---------:|:-------:|:-----:|:--------|
+|   50 KHz  |  6.60   |  123  |
+|  100 KHz  |  5.11   |  140  |  default
 |  150 KHz  |  4.79   |       |
-|  200 KHz  |  4.64   |       |
+|  200 KHz  |  4.64   |  140  |
 |  250 KHz  |  4.56   |       |
-|  300 KHz  |  4.50   |       |
+|  300 KHz  |  4.50   |  164  |
 |  350 KHz  |  4.47   |       |
-|  400 KHz  |  4.45   |       |
+|  400 KHz  |  4.45   |  164  |
 |  450 KHz  |  4.43   |       |
-|  500 KHz  |  4.42   |       |
-|  550 KHz  |  ----   | fail  |
+|  500 KHz  |  4.42   |  163  |
+|  550 KHz  |  ----   |       |  fail 
 
 
-### Compatibility
-
-This library should also work for SHT30, SHT31 and SHT35 but 
-this is not verified yet.
-
-Accuracy table
-
-| SENSOR | Temperature | Humidity |
-|:------:|:-----------:|:--------:|
-| SHT30  |    ~0.3°    |   2.0%   |
-| SHT31  |    ~0.3°    |   1.5%   |
-| SHT35  |    ~0.2°    |   1.5%   |
-| SHT85  |    ~0.2°    |   1.5%   |
+SPS = samples per second 
 
 
-Need to investigate if the interface is identical?
+#### Compatibility
+
+Accuracy table:
+
+|  Sensor  |  Temperature  |  Humidity  |  Verified  }
+|:--------:|:-------------:|:----------:|:----------:|
+|   SHT30  |      ~0.3°    |     2.0%   |     N      |
+|   SHT31  |      ~0.3°    |     1.5%   |     Y      |
+|   SHT35  |      ~0.2°    |     1.5%   |     N      |
+|   SHT85  |      ~0.2°    |     1.5%   |     Y      |
+
+
+Check SHT40, SHT45 compatibility. 
+If you have info please share.
+Need to investigate if the interface is identical.
 If so the libraries might be merged.
 
+
+#### Related libraries
+
+- https://github.com/RobTillaart/SHT2x
+- https://github.com/RobTillaart/SHT31
+- https://github.com/RobTillaart/SHT31_SW  = softWire based I2C.
+- https://github.com/RobTillaart/tinySHT2x
+
 An elaborated library for the SHT31 sensor can be found here
-https://github.com/hawesg/SHT31D_Particle_Photon_ClosedCube
+- https://github.com/hawesg/SHT31D_Particle_Photon_ClosedCube
 
 
 ## Interface
+
+```cpp
+#include "SHT85.h"
+```
+
 
 #### Base interface
 
@@ -82,28 +101,65 @@ https://github.com/hawesg/SHT31D_Particle_Photon_ClosedCube
 - **SHT35()** constructor.
 - **SHT85()** constructor.
 - **uint8_t getType()** returns numeric part of sensor type.
+Returns 0 for the base class.
 - **bool begin(uint8_t address, uint8_t dataPin, uint8_t clockPin)** begin function for ESP8266 & ESP32; **WARNING: not verified yet**
 returns false if device address is incorrect or device cannot be reset.
 - **bool begin(uint8_t dataPin, uint8_t clockPin)** same as above. 
-Uses SHT_DEFAULT_ADDRESS as address.
+Uses SHT_DEFAULT_ADDRESS (0x44) as address.
 - **bool begin(uint8_t address, TwoWire \*wire = &Wire)** for platforms with multiple I2C buses. Default Wire as I2C bus.
 - **bool begin(TwoWire \*wire = &Wire)** same as above.
-Uses SHT_DEFAULT_ADDRESS as address.
-- **bool read(bool fast = true)** blocks 4 (fast) or 15 (slow) milliseconds + actual read + math.
-Does read both the temperature and humidity.
+Uses SHT_DEFAULT_ADDRESS (0x44) as address.
+
+
+#### Status
+
 - **bool isConnected()** check sensor is reachable over I2C. Returns false if not connected.
 - **uint16_t readStatus()** details see datasheet and **Status fields** below.
 - **uint32_t lastRead()** in milliSeconds since start of program.
 - **bool reset(bool hard = false)** resets the sensor, soft reset by default. Returns false if fails.
+
+
+#### Synchronous read
+
+- **bool read(bool fast = true)** blocks 4 (fast) or 15 (slow) milliseconds + actual read + math.
+Does read both the temperature and humidity.
+
+#### Asynchronous read
+
+See async example for usage.
+
+- **bool requestData(bool fast = true)** requests a new measurement. 
+Returns false if the request fails.
+Set a timestamp.
+- **bool dataReady(bool fast = true)** Checks if appropriate time (4 / 15 ms) 
+has past since request to read the data.
+- **bool readData(bool fast = true)** fast = true skips the CRC check. 
+Returns false if reading the data fails or if CRC check failed.
+- **uint32_t getLastRequest()** returns timestamp of last requestData.
+
+
+#### Temperature and humidity
+
+Note that the temperature and humidity values are recalculated on every call to getHumidity() and getTemperature(). 
+If you're worried about the extra cycles, you should make sure to cache these values or only request them after 
+you've performed a new reading.
+
 - **float getHumidity()** computes the relative humidity in % based on the latest raw reading, and returns it.
 - **float getTemperature()** computes the temperature in °C based on the latest raw reading, and returns it.
 - **float getFahrenheit()** computes the temperature in °F based on the latest raw reading, and returns it.
 - **uint16_t getRawHumidity()** returns the raw two-byte representation of humidity directly from the sensor.
 - **uint16_t getRawTemperature()** returns the raw two-byte representation of temperature directly from the sensor.
 
-Note that the temperature and humidity values are recalculated on every call to getHumidity() and getTemperature(). 
-If you're worried about the extra cycles, you should make sure to cache these values or only request them after 
-you've performed a new reading.
+
+#### Temperature and humidity offset
+
+Default the offset is zero for both temperature and humidity.
+These functions allows one to adjust them a little.
+
+- **void setTemperatureOffset(float offset = 0)** idem.
+- **float getTemperatureOffset()** idem.
+- **void setHumidityOffset(float offset = 0)** idem.
+- **float getHumidityOffset()** idem.
 
 
 #### Error interface
@@ -136,78 +192,62 @@ within **180** seconds of the last switch off. Note: this guarding is not reboot
 **WARNING:** The user is responsible to switch the heater off manually!
 
 The class does **NOT** do this automatically.
-Switch off the heater by directly calling **heatOff()** or indirectly by calling **isHeaterOn()**.
+Switch off the heater by explicitly calling **heatOff()** or indirectly by calling **isHeaterOn()**.
 
 - **void setHeatTimeout(uint8_t seconds)** Set the time out of the heat cycle.
 This value is truncated to max 180 seconds. 
-- **uint8_t getHeatTimeout
-- **bool heatOn()** switches heat cycle on if not already on.
-Returns false if fails, setting error to **SHT_ERR_HEATER_COOLDOWN** 
+- **uint8_t getHeatTimeout()** returns the value set.
+- **bool heatOn()** switches the heat cycle on if not already on.
+Returns false if this fails, setting error to **SHT_ERR_HEATER_COOLDOWN** 
 or to **SHT_ERR_HEATER_ON**. 
-- **bool heatOff()** switches heat cycle off. 
+- **bool heatOff()** switches the heat cycle off. 
 Returns false if fails, setting error to **SHT_ERR_HEATER_OFF**.
-- **bool isHeaterOn()** is the sensor still in heating cycle? replaces **heatUp()**.
-Will switch the heater off if max heating time has passed.
-
-
-#### Async interface
-
-See async example for usage
-
-- **bool requestData()** requests a new measurement. Returns false if the request fails.
-- **bool dataReady()** checks if enough time has passed to read the data. (15 milliseconds)
-- **bool readData(bool fast = true)** fast = true skips the CRC check. 
-Returns false if reading fails or in case of a CRC failure. 
+- **bool isHeaterOn()** is the sensor still in a heating cycle? Replaces **heatUp()**.
+Will switch the heater off if maximum heating time has passed.
 
 
 ## Status fields
 
-| BIT  | Description                | value   | notes |
-|:-----|:---------------------------|:--------|:------|
-| 15   | Alert pending status       |  0      | no pending alerts
-|      |                            |  1      | at least one pending alert - default
-| 14   | Reserved                   |  0      |
-| 13   | Heater status              |  0      | Heater OFF - default
-|      |                            |  1      | Heater ON 
-| 12   | Reserved                   |  0      |
-| 11   | Humidity tracking alert    |  0      | no alert - default
-|      |                            |  1      | alert
-| 10   | Temperature tracking alert |  0      | no alert - default
-|      |                            |  1      | alert
-| 9-5  | Reserved                   |  00000  |
-|  4   | System reset detected      |  0      | no reset since last ‘clear status register’ command
-|      |                            |  1      | reset detected (hard or soft reset command or supply fail) - default
-| 3-2  | Reserved                   |  00     |
-|  1   | Command status             |  0      | last command executed successfully
-|      |                            |  1      | last command not processed. Invalid or failed checksum
-|  0   | Write data checksum status |  0      | checksum of last write correct
-|      |                            |  1      | checksum of last write transfer failed
-
-
-## Operation
-
-See examples.
+|  BIT  | Description                |  value  |  notes  |
+|:------|:---------------------------|:--------|:--------|
+|  15   | Alert pending status       |  0      | no pending alerts
+|       |                            |  1      | at least one pending alert - default
+|  14   | Reserved                   |  0      |
+|  13   | Heater status              |  0      | Heater OFF - default
+|       |                            |  1      | Heater ON 
+|  12   | Reserved                   |  0      |
+|  11   | Humidity tracking alert    |  0      | no alert - default
+|       |                            |  1      | alert
+|  10   | Temperature tracking alert |  0      | no alert - default
+|       |                            |  1      | alert
+|  9-5  | Reserved                   |  00000  | reserved
+|   4   | System reset detected      |  0      | no reset since last ‘clear status register’ command
+|       |                            |  1      | reset detected (hard or soft reset command or supply fail) - default
+|  3-2  | Reserved                   |  00     |
+|   1   | Command status             |  0      | last command executed successfully
+|       |                            |  1      | last command not processed. Invalid or failed checksum
+|   0   | Write data checksum status |  0      | checksum of last write correct
+|       |                            |  1      | checksum of last write transfer failed
 
 
 ## Future
 
-#### should
+#### Must
 
-- testing
-  - verify working with ESP32
-  - software I2C experiments
+
+#### Should
+
+- more testing (incl heater)
+- verify working with ESP32
 - improve error handling / status. (all code paths)
-- add offsets for temperature and humidity.
-  - like other sensors
-- move code from .h to .cpp
+- test SHT30/35
+- check SHT4x series for compatibility.
 
 
-#### could
+#### Could
 
 - investigate command ART (auto sampling at 4 Hz)
 - investigate command BREAK (stop auto sampling)
-- merge with other SHT sensors if possible
-- separate release notes.
 
 
 #### won't
@@ -217,5 +257,8 @@ See examples.
 - create a SHT85 simulator 
   - I2C slave sketch with e.g. a DHT22 sensor/
   - not within this library.
-
+- software I2C experiments 
+  - see https://github.com/RobTillaart/SHT31_SW
+- merge with other SHT sensors if possible?
+  - derived classes fixes this enough.
 
