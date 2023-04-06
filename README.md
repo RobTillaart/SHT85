@@ -85,6 +85,9 @@ Note: SHT40, SHT41 and SHT45 are not compatible with SHT3x and SHT85.
 An elaborated library for the SHT31 sensor can be found here
 - https://github.com/hawesg/SHT31D_Particle_Photon_ClosedCube
 
+Dewpoint and related functions
+- https://github.com/RobTillaart/Temperature
+
 
 ## Interface
 
