@@ -152,7 +152,7 @@ Returns false if reading the data fails or if CRC check failed.
 
 #### Temperature and humidity
 
-Note that the temperature and humidity values are recalculated on every call to getHumidity() and getTemperature(). 
+Note that the temperature and humidity values are recalculated on every call to **getHumidity()** and **getTemperature()**. 
 If you're worried about the extra cycles, you should make sure to cache these values or only request them after 
 you've performed a new reading.
 
@@ -160,8 +160,20 @@ you've performed a new reading.
 - **float getTemperature()** computes the temperature in °C based on the latest raw reading, and returns it.
 - **float getFahrenheit()** computes the temperature in °F based on the latest raw reading, and returns it.
 Note that the optional offset is set in °Celsius.
+
+
+The **getRawHumidity()** and **getRawTemperature()** can be used to minimize storage or communication. 
+Another application is faster comparison with a previous value or threshold.
+
 - **uint16_t getRawHumidity()** returns the raw two-byte representation of humidity directly from the sensor.
 - **uint16_t getRawTemperature()** returns the raw two-byte representation of temperature directly from the sensor.
+
+The library has no **CelsiusToRaw()** function although this is relative easy.
+``` 
+rawTemperatureC = (tempC + 45) * (65535 / 175.0); 
+rawTemperatureF = (tempF + 49) * (65535 / 315.0); 
+rawHumidity     = humidity * 655.35;
+```
 
 
 #### Temperature and humidity offset
