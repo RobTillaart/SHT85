@@ -34,12 +34,13 @@ Always check datasheet before connecting!
 ```
 
 
-The SHT85 sensors should work up to 1000 KHz, however during tests 
-with an Arduino UNO it stopped between 500 - 550 KHz.
+The SHT85 sensors should work up to 1000 KHz. 
+During tests with an Arduino UNO it stopped between 500 - 550 KHz.
 So to be safe I recommend not to use the sensor above 400 KHz.
 Also the differences in read time becomes quite small. (max 15% gain).
 
-See indicative output example sketch. SPS are added later.
+See indicative output example sketch. 
+SPS (= samples per second) are added later.
 
 
 | I2C speed | read ms |  SPS  |  notes  |
@@ -57,10 +58,14 @@ See indicative output example sketch. SPS are added later.
 |  550 KHz  |  ----   |       |  fail 
 
 
-SPS = samples per second 
+At 10% load the SHT85 can be used to make about 10-15 SPS.
 
 
 #### Compatibility
+
+The SHT85 is protocom compatible with the SHT3x series.
+Main difference is the accuracy. 
+Compare the datasheets to see all differences.
 
 Accuracy table:
 
@@ -72,7 +77,8 @@ Accuracy table:
 |   SHT85  |      ~0.2°    |     1.5%   |     Y      |
 
 
-Note: SHT40, SHT41 and SHT45 are not compatible with SHT3x and SHT85.
+Note: The SHT40, SHT41 and SHT45 are not protocol compatible with SHT3x and SHT85.
+The SHT4x series is slightly faster than the SHT3x series.
 
 
 #### Related libraries
@@ -85,7 +91,7 @@ Note: SHT40, SHT41 and SHT45 are not compatible with SHT3x and SHT85.
 An elaborated library for the SHT31 sensor can be found here
 - https://github.com/hawesg/SHT31D_Particle_Photon_ClosedCube
 
-Dewpoint and related functions
+Dewpoint, heatindex  and related functions
 - https://github.com/RobTillaart/Temperature
 
 
@@ -127,6 +133,9 @@ Uses SHT_DEFAULT_ADDRESS (0x44) as address.
 - **bool read(bool fast = true)** blocks 4 (fast) or 15 (slow) milliseconds + actual read + math.
 Does read both the temperature and humidity.
 
+Note: the medium level is not supported (yet).
+
+
 #### Asynchronous read
 
 See async example for usage.
@@ -160,11 +169,14 @@ Note that the optional offset is set in °Celsius.
 Default the offset is zero for both temperature and humidity.
 These functions allows one to adjust them a little.
 
-Note the offset is in degrees Celsius.
+Note: the offset is in degrees Celsius.
+To set an offset in degrees Fahrenheit, multiply the Fahrenheit offset with 0.55555556 to get Celsius steps.
+So 4°F becomes 2.2222°C.
 
-- **void setTemperatureOffset(float offset = 0)** idem.
+
+- **void setTemperatureOffset(float offset = 0)** set the offset, default is zero removing the offset.
 - **float getTemperatureOffset()** returns the set offset.
-- **void setHumidityOffset(float offset = 0)** idem.
+- **void setHumidityOffset(float offset = 0)** set the offset, default is zero removing the offset.
 - **float getHumidityOffset()** returns the set offset.
 
 
@@ -174,18 +186,18 @@ Note the offset is in degrees Celsius.
 Be sure to clear the error flag by calling **getError()** before calling 
 any command as the error flag could be from a previous command.
 
-| Error | Symbolic                  | Description                 |
-|:-----:|:--------------------------|:----------------------------|
-| 0x00  | SHT_OK                    | no error                    |
-| 0x81  | SHT_ERR_WRITECMD          | I2C write failed            |
-| 0x82  | SHT_ERR_READBYTES         | I2C read failed             |
-| 0x83  | SHT_ERR_HEATER_OFF        | Could not switch off heater |
-| 0x84  | SHT_ERR_NOT_CONNECT       | Could not connect           |
-| 0x85  | SHT_ERR_CRC_TEMP          | CRC error in temperature    |
-| 0x86  | SHT_ERR_CRC_HUM           | CRC error in humidity       |
-| 0x87  | SHT_ERR_CRC_STATUS        | CRC error in status field   |
-| 0x88  | SHT_ERR_HEATER_COOLDOWN   | Heater need to cool down    |
-| 0x89  | SHT_ERR_HEATER_ON         | Could not switch on heater  |
+|  Error  |  Symbolic                 |  Description                  |
+|:-------:|:--------------------------|:------------------------------|
+|   0x00  |  SHT_OK                   |  no error                     |
+|   0x81  |  SHT_ERR_WRITECMD         |  I2C write failed             |
+|   0x82  |  SHT_ERR_READBYTES        |  I2C read failed              |
+|   0x83  |  SHT_ERR_HEATER_OFF       |  Could not switch off heater  |
+|   0x84  |  SHT_ERR_NOT_CONNECT      |  Could not connect            |
+|   0x85  |  SHT_ERR_CRC_TEMP         |  CRC error in temperature     |
+|   0x86  |  SHT_ERR_CRC_HUM          |  CRC error in humidity        |
+|   0x87  |  SHT_ERR_CRC_STATUS       |  CRC error in status field    |
+|   0x88  |  SHT_ERR_HEATER_COOLDOWN  |  Heater need to cool down     |
+|   0x89  |  SHT_ERR_HEATER_ON        |  Could not switch on heater   |
 
 
 #### Heater interface
@@ -247,19 +259,20 @@ Will switch the heater off if maximum heating time has passed.
 
 #### Should
 
-- more testing (incl heater)
+- more testing (including heater)
 - verify working with ESP32
 - improve error handling / status.
   - all code paths
   - reset to OK 
-- test SHT30/35
-- check SHT4x series for compatibility.
+- support for medium level read.
+  - 3 levels iso 2.
 
 
 #### Could
 
 - investigate command ART (auto sampling at 4 Hz)
 - investigate command BREAK (stop auto sampling)
+- test SHT30/35
 
 
 #### won't
