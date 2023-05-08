@@ -63,9 +63,9 @@ At 10% load the SHT85 can be used to make about 10-15 SPS.
 
 #### Compatibility
 
-The SHT85 is protocom compatible with the SHT3x series.
+The SHT85 is protocol compatible with the SHT3x series.
 Main difference is the accuracy. 
-Compare the datasheets to see all differences.
+Compare the data sheets to see all differences.
 
 Accuracy table:
 
@@ -261,6 +261,11 @@ Will switch the heater off if maximum heating time has passed.
 |       |                            |  1      | checksum of last write transfer failed
 
 
+#### SHT85 specific
+
+- **uint32_t getSerial()** experimental, time sensitive command.
+
+
 ## Future
 
 
@@ -287,7 +292,7 @@ Will switch the heater off if maximum heating time has passed.
 - test SHT30/35
 
 
-#### won't
+#### Won't
 
 - rename the library? to SHT ? or sensirion.h ?
   - not on short term

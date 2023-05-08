@@ -1,7 +1,7 @@
 //
 //    FILE: SHT85.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.4.0
+// VERSION: 0.4.1
 //    DATE: 2021-02-10
 // PURPOSE: Arduino library for the SHT85 temperature and humidity sensor
 //          https://nl.rs-online.com/web/p/temperature-humidity-sensor-ics/1826530
@@ -25,6 +25,8 @@
 #define SHT_HEAT_ON           0x306D
 #define SHT_HEAT_OFF          0x3066
 #define SHT_HEATER_TIMEOUT    180000UL  //  milliseconds
+
+#define SHT_GET_SERIAL        0x3682
 
 
 SHT::SHT()
@@ -390,9 +392,6 @@ float SHT::getHumidityOffset()
 }
 
 
-
-
-
 //////////////////////////////////////////////////////////
 //
 //  PROTECTED
@@ -472,6 +471,33 @@ SHT85::SHT85()
 {
   _type = 85;
 };
+
+
+uint32_t SHT85::getSerial()
+{
+  uint8_t bytes[6];
+
+  if (writeCmd(SHT_GET_SERIAL) == false)
+  {
+    return 0xFFFFFFF0;
+  }
+  delayMicroseconds(500);
+  if (readBytes(6, (uint8_t*) &bytes[0]) == false)
+  {
+    return 0xFFFFFFFF;
+  }
+  //  check CRC
+  //  todo
+  //  combine bytes to serial.
+  uint32_t serial = bytes[0];
+  serial <<= 8;
+  serial += bytes[1];
+  serial <<= 8;
+  serial += bytes[3];
+  serial <<= 8;
+  serial += bytes[4];
+  return serial;
+}
 
 
 //  -- END OF FILE --
