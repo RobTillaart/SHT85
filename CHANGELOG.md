@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.4.1] - 2022-05-09
-- add **uint32_t getSerial()** for SHT85 (no CRC check).
+- add **uint32_t getSerialNumber()** for SHT85 (no CRC check).
 - improve error handling.
 - update readme.md
 
