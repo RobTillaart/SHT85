@@ -38,7 +38,7 @@ void setup()
   Serial.print(stat, HEX);
   Serial.println();
 
-  uint32_t ser = sht.getSerial();
+  uint32_t ser = sht.GetSerialNumber();
   Serial.print(ser, HEX);
   Serial.println();
   delay(1000);

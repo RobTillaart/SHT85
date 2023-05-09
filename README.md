@@ -269,7 +269,7 @@ Will switch the heater off if maximum heating time has passed.
 
 #### SHT85 specific
 
-- **uint32_t getSerial()** Returns a 32 bit unique serial number. 
+- **uint32_t GetSerialNumber()** Returns a 32 bit unique serial number. 
   This command seems to be timing sensitive, it uses a delay of 500us
   which may need "tuning". So function is bit experimental.
 

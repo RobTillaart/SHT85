@@ -185,7 +185,7 @@ class SHT85 : public SHT
 public:
   SHT85();
     //  EXPERIMENTAL for 0.4.1
-  uint32_t getSerial();
+  uint32_t GetSerialNumber();
 };
 
 

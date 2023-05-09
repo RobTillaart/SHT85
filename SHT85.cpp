@@ -485,7 +485,7 @@ SHT85::SHT85()
 }
 
 
-uint32_t SHT85::getSerial()
+uint32_t SHT85::GetSerialNumber()
 {
   uint8_t bytes[6];
 
