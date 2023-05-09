@@ -52,6 +52,7 @@
 #define SHT_ERR_CRC_STATUS              0x87
 #define SHT_ERR_HEATER_COOLDOWN         0x88
 #define SHT_ERR_HEATER_ON               0x89
+#define SHT_ERR_SERIAL                  0x8A
 
 
 class SHT

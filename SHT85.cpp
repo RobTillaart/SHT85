@@ -105,7 +105,11 @@ uint8_t SHT::getType()
 //
 bool SHT::read(bool fast)
 {
-  requestData(fast);
+  //  prevent error on failed request.
+  if (requestData(fast) == false)
+  {
+    return false;
+  }
   while(dataReady(fast) == false) yield();
   return readData(fast);
 }
@@ -159,6 +163,7 @@ bool SHT::readData(bool fast)
 
   _lastRead = millis();
 
+  _error = SHT_OK;
   return true;
 }
 
@@ -177,9 +182,15 @@ bool SHT::isConnected()
 {
   _wire->beginTransmission(_address);
   int rv = _wire->endTransmission();
-  if (rv != 0) _error = SHT_ERR_NOT_CONNECT;
-  return (rv == 0);
+  if (rv != 0)
+  {
+    _error = SHT_ERR_NOT_CONNECT;
+    return false;
+  }
+  _error = SHT_OK;
+  return true;
 }
+
 
 #ifdef doc
 //  bit - description
@@ -231,7 +242,6 @@ uint16_t SHT::readStatus()
     _error = SHT_ERR_CRC_STATUS;
     return 0xFFFF;
   }
-
   return (uint16_t) (status[0] << 8) + status[1];
 }
 
@@ -289,7 +299,7 @@ bool SHT::heatOn()
   }
   if (writeCmd(SHT_HEAT_ON) == false)
   {
-    _error = SHT_ERR_HEATER_ON;
+    _error = SHT_ERR_HEATER_ON;  //  more specific error!
     return false;
   }
   _heaterStart = millis();
@@ -303,7 +313,7 @@ bool SHT::heatOff()
   //  always switch off the heater - ignore _heaterOn flag.
   if (writeCmd(SHT_HEAT_OFF) == false)
   {
-    _error = SHT_ERR_HEATER_OFF;  // can be serious!
+    _error = SHT_ERR_HEATER_OFF;   //  can be serious!
     return false;
   }
   _heaterStop = millis();
@@ -425,6 +435,7 @@ bool SHT::writeCmd(uint16_t cmd)
     _error = SHT_ERR_WRITECMD;
     return false;
   }
+  _error = SHT_OK;
   return true;
 }
 
@@ -432,16 +443,17 @@ bool SHT::writeCmd(uint16_t cmd)
 bool SHT::readBytes(uint8_t n, uint8_t *val)
 {
   int rv = _wire->requestFrom(_address, (uint8_t) n);
-  if (rv == n)
+  if (rv != n)
   {
-    for (uint8_t i = 0; i < n; i++)
-    {
-      val[i] = _wire->read();
-    }
-    return true;
+    _error = SHT_ERR_READBYTES;
+    return false;
   }
-  _error = SHT_ERR_READBYTES;
-  return false;
+  for (uint8_t i = 0; i < n; i++)
+  {
+    val[i] = _wire->read();
+  }
+  _error = SHT_OK;
+  return true;
 }
 
 
@@ -452,25 +464,25 @@ bool SHT::readBytes(uint8_t n, uint8_t *val)
 SHT30::SHT30()
 {
   _type = 30;
-};
+}
 
 
 SHT31::SHT31()
 {
   _type = 31;
-};
+}
 
 
 SHT35::SHT35()
 {
   _type = 35;
-};
+}
 
 
 SHT85::SHT85()
 {
   _type = 85;
-};
+}
 
 
 uint32_t SHT85::getSerial()
@@ -481,9 +493,10 @@ uint32_t SHT85::getSerial()
   {
     return 0xFFFFFFF0;
   }
-  delayMicroseconds(500);
+  delayMicroseconds(500);  //  timing sensitive.
   if (readBytes(6, (uint8_t*) &bytes[0]) == false)
   {
+    _error = SHT_ERR_SERIAL;
     return 0xFFFFFFFF;
   }
   //  check CRC
