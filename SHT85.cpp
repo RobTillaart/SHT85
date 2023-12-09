@@ -457,8 +457,8 @@ SHT85::SHT85(uint8_t address, TwoWire *wire) : SHT(address, wire)
 
 bool SHT85::begin()
 {
-  if (address != 0x44) return false;
-  return SHT::begin(address);
+  if (_address != 0x44) return false;
+  return SHT::begin();
 }
 
 
