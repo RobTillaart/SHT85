@@ -217,11 +217,11 @@ unittest(test_offset)
 //
 unittest(test_getType)
 {
-  SHT   sht;
-  SHT30 sht0;
-  SHT31 sht1;
-  SHT35 sht2;
-  SHT85 sht3;
+  SHT   sht(0x44);
+  SHT30 sht0(0x44);
+  SHT31 sht1(0x44);
+  SHT35 sht2(0x44);
+  SHT85 sht3(0x44);
 
   assertEqual(00, sht.getType());
   assertEqual(30, sht0.getType());
