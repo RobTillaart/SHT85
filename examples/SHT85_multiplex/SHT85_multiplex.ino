@@ -19,7 +19,7 @@
 
 TCA9548 MP(0x70);
 
-#define SHT85_ADDRESS   0x44
+#define SHT85_ADDRESS         ((uint8_t)0x44)
 
 SHT85 sht(SHT85_ADDRESS);  //  the object is reused in the multiplexing.
 

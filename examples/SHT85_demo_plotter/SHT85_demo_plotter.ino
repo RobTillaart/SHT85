@@ -15,7 +15,7 @@
 
 #include "SHT85.h"
 
-#define SHT85_ADDRESS       0x44
+#define SHT85_ADDRESS         ((uint8_t)0x44)
 
 uint32_t start;
 uint32_t stop;

@@ -1,7 +1,7 @@
 //
 //    FILE: SHT85.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.6.0
+// VERSION: 0.6.1
 //    DATE: 2021-02-10
 // PURPOSE: Arduino library for the SHT85 temperature and humidity sensor
 //          https://nl.rs-online.com/web/p/temperature-humidity-sensor-ics/1826530
