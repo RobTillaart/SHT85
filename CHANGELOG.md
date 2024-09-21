@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.6.1] - 2024-09-20
-- Fix #26, compilation on ESP32 Lolin Wemos D1 mini
+- Bump version number as 0.6.0 wasn't released correctly
 
 
 ## [0.6.0] - 2023-12-09
