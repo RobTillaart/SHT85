@@ -29,7 +29,7 @@
 #define SHT85_LIB_VERSION               SHT_LIB_VERSION
 
 #ifndef SHT_DEFAULT_ADDRESS
-#define SHT_DEFAULT_ADDRESS             ((uint8_t)0x44)
+#define SHT_DEFAULT_ADDRESS             0x44
 #endif
 
 //  fields readStatus
