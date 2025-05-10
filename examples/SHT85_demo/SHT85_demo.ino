@@ -41,9 +41,17 @@ void setup()
   Serial.print(stat, HEX);
   Serial.println();
 
-  uint32_t ser = sht.GetSerialNumber();
-  Serial.print(ser, HEX);
-  Serial.println();
+  uint32_t ser;
+  bool b = sht.getSerialNumber(ser, true);
+  if (b)
+  {
+    Serial.print(ser, HEX);
+    Serial.println();
+  }
+  else
+  {
+    Serial.println("Error: could not get serial number.");
+  }
   delay(1000);
 }
 
