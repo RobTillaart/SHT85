@@ -19,7 +19,7 @@ static constexpr uint16_t SHT_CLEAR_STATUS      = 0x3041;
 static constexpr uint16_t SHT_SOFT_RESET        = 0x30A2;
 static constexpr uint16_t SHT_HARD_RESET        = 0x0006;
 
-static constexpr uint16_t SHT_MEASUREMENT_FAST  = 0x2416 ;    //  page 10 datasheet
+static constexpr uint16_t SHT_MEASUREMENT_FAST  = 0x2416;     //  page 10 datasheet
 static constexpr uint16_t SHT_MEASUREMENT_SLOW  = 0x2400;     //  no clock stretching
 
 static constexpr uint16_t SHT_HEAT_ON           = 0x306D;
